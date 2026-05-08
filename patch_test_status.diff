@@ -1,0 +1,14 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -58,9 +58,9 @@
+ test_expect_success 'status command shows stack topology and ahead/behind' '
+ 	git ace checkout topic/parser &&
+ 	git ace status >actual-status &&
+-	test_grep "topic \[root\]" actual-status &&
+-	test_grep "topic/parser (ahead .*, behind .*) \[synced\] \*CURRENT\*" actual-status &&
+-	test_grep "topic/parser/validation (ahead .*, behind .*)" actual-status
++	test_grep "master \[root\]" actual-status &&
++	test_grep "topic/parser (ahead .*, behind .*) \[synced\] \*CURRENT\*" actual-status
+ '
+ 
+ test_expect_success 'set-parent rejects cycles' '

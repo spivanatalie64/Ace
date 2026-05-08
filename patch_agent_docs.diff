@@ -1,0 +1,21 @@
+--- Documentation/project-summary/code/ace-internals.md
++++ Documentation/project-summary/code/ace-internals.md
+@@ -75,6 +75,17 @@
+ 
+ This is a simple but strong design choice. Instead of hard-coding AI behavior into repository internals, Ace exposes structured context and lets external agents use it.
+ 
++### Agent Environment Contract
++
++The specific contract provided to agents executed via `git ace agent run <agent-name>` is as follows:
++
++- `ACE_AGENT_NAME`: The resolved name of the agent executable being invoked.
++- `ACE_BRANCH`: The current or target Ace virtual branch (e.g., `feature/ui/header`).
++- `ACE_REAL_BRANCH`: The underlying Git ref (e.g., `ace/feature_ui_header-a1b2c3d4e5f6`).
++- `ACE_PARENT_BRANCH`: The Ace virtual branch parent, if one is configured.
++- `ACE_REPOSITORY_ROOT`: The absolute path to the repository root directory.
++- `ACE_VCS_BACKEND`: Hard-coded to `git` to signal the underlying storage engine.
++- `ACE_INTEROP_TARGETS`: A comma-separated list of active interop targets, currently `git,mercurial`.
++
+ ## Mercurial Interop Model
+ 
+ Ace's Mercurial support is intentionally branch-pointer-oriented.

@@ -57,14 +57,23 @@ int cmd_ace(int argc, const char **argv, const char *prefix)
          * mounts only the current repository. When "--no-sandbox" is present we
          * invoke the harness directly.
          */
-        int sandbox = 1;
+        int full_sandbox = 1;   /* restrict both read/write */
+        int read_outside = 0;    /* allow reading outside repo */
         int filtered_argc = 0;
         const char **filtered_argv = NULL;
         int k;
-        /* Remove "--no-sandbox" from the arguments passed to the harness. */
+        /* Parse sandbox-related flags */
         for (k = 0; k < new_argc; k++) {
             if (!strcmp(new_argv[k], "--no-sandbox")) {
-                sandbox = 0;
+                /* Permit reading files outside the repository while keeping write sandbox */
+                read_outside = 1;
+                full_sandbox = 0;
+                continue;
+            }
+            if (!strcmp(new_argv[k], "--I-know-the-risks-of-no-sandbox")) {
+                /* Disable sandbox completely */
+                full_sandbox = 0;
+                read_outside = 0;
                 continue;
             }
             filtered_argc++;
@@ -72,13 +81,13 @@ int cmd_ace(int argc, const char **argv, const char *prefix)
         filtered_argv = xcalloc(filtered_argc + 1, sizeof(char *));
         filtered_argc = 0;
         for (k = 0; k < new_argc; k++) {
-            if (!strcmp(new_argv[k], "--no-sandbox"))
+            if (!strcmp(new_argv[k], "--no-sandbox") || !strcmp(new_argv[k], "--I-know-the-risks-of-no-sandbox"))
                 continue;
             filtered_argv[filtered_argc++] = new_argv[k];
         }
         filtered_argv[filtered_argc] = NULL;
  
-        if (sandbox) {
+        if (!full_sandbox) {
             struct child_process cp = CHILD_PROCESS_INIT;
             const char **cp_argv;
             int cp_argc = 0;

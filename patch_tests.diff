@@ -1,0 +1,47 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -69,17 +69,39 @@
+ '
+ 
+ test_expect_success 'rebase-stack rebases descendants onto updated parent' '
++	git checkout "$(cat root-branch)" &&
++	git ace create rebase-test &&
++	git ace checkout rebase-test &&
++	test_commit rebase-base file.txt "base" &&
++	git ace create rebase-test/child &&
++	git ace checkout rebase-test/child &&
++	test_commit rebase-child file.txt "base" &&
++	git ace checkout rebase-test &&
++	test_commit rebase-update file2.txt "update" &&
++	git ace checkout rebase-test/child &&
++	git ace rebase-stack rebase-test &&
++	topic_ref=$(git ace resolve rebase-test) &&
++	parser_ref=$(git ace resolve rebase-test/child) &&
++	test "$(git merge-base "$topic_ref" "$parser_ref")" = "$(git rev-parse "$topic_ref")"
++'
++
++test_expect_success 'stack conflict UX halts, allows continue, and finishes' '
+ 	git checkout "$(cat root-branch)" &&
+-	git ace create temp-tree &&
+-	git ace checkout temp-tree &&
+-	git ace create temp-tree/child &&
+-	git ace checkout temp-tree/child &&
+-	git ace delete --with-descendants --force temp-tree &&
+-	test_must_fail git ace resolve temp-tree/child &&
+-	test "$(git branch --show-current)" = "$(cat root-branch)"
++	git ace create conflict-test &&
++	git ace checkout conflict-test &&
++	test_commit conflict-base file.txt "root" &&
++	git ace create conflict-test/child &&
++	git ace checkout conflict-test/child &&
++	test_commit conflict-child file.txt "child" &&
++	git ace checkout conflict-test &&
++	test_commit conflict-new file.txt "new root" &&
++	test_must_fail git ace rebase-stack conflict-test >out &&
++	test_grep "Stack rebase halted due to conflicts" out &&
++	echo "resolved" >file.txt && git add file.txt && git rebase --continue &&
++	git ace continue >out2 &&
++	test_grep "Stack operation complete" out2
+ '
+ 
+ test_expect_success 'agent integration exposes Ace branch context' '

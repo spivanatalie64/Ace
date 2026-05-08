@@ -1,0 +1,12 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -176,8 +176,8 @@
+ 	$(cat root-branch)
+ 	  epic
+ 	    epic/parser
+-	      epic/parser/drift-test
+ 	      epic/parser/validation
++	        epic/parser/drift-test
+ 	EOF
+ 	git ace tree epic/parser/validation >actual-renamed-tree &&
+ 	test_cmp expected-renamed-tree actual-renamed-tree &&

@@ -1,0 +1,10 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -188,6 +188,7 @@
+ test_expect_success 'delete with descendants checks out fallback branch if current branch is deleted' '
+ 	git checkout "$(cat root-branch)" &&
+ 	git ace create temp-tree &&
++	git ace checkout temp-tree &&
+ 	git ace create temp-tree/child &&
+ 	git ace checkout temp-tree/child &&
+ 	git ace delete --with-descendants --force temp-tree &&

@@ -1,0 +1,25 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -63,6 +63,22 @@
+ 	test_grep "topic/parser (ahead .*, behind .*) \[synced\] \*CURRENT\*" actual-status
+ '
+ 
++test_expect_success 'status warns about drift and repair fixes it' '
++	git ace create drift/test &&
++	git ace checkout drift/test &&
++	test_commit drift-base file.txt "base" &&
++	drift_ref=$(git ace resolve drift/test) &&
++	git branch -D "$drift_ref" &&
++	git ace status >actual-status &&
++	test_grep "drift/test \[DANGLING\]" actual-status &&
++	test_grep "Health:" actual-status &&
++	test_grep "drift/test is dangling (backing ref missing)" actual-status &&
++	git ace repair --clean-dangling >repair-out &&
++	test_grep "Cleaning dangling virtual branch: drift/test" repair-out &&
++	git ace status >actual-status2 &&
++	test_must_fail grep "drift/test" actual-status2
++'
++
+ test_expect_success 'set-parent rejects cycles' '
+ 	test_must_fail git ace set-parent topic topic/parser/validation 2>err &&
+ 	test_grep "refusing to create cycle" err &&

@@ -1,0 +1,26 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -107,13 +107,15 @@
+ 	root_ref=$(git rev-parse "$root_branch") &&
+ 	topic_ref=$(git rev-parse "$(git ace resolve topic)") &&
+ 	parser_ref=$(git rev-parse "$(git ace resolve topic/parser)") &&
++	drift_test_ref=$(git rev-parse "$(git ace resolve topic/parser/drift-test)") &&
+ 	validation_ref=$(git rev-parse "$(git ace resolve topic/parser/validation)") &&
+ 	git ace hg export-bookmarks hg-bookmarks &&
+ 	cat >expected-bookmarks <<-EOF &&
+ 	$topic_ref topic
+ 	$parser_ref topic/parser
++	$drift_test_ref topic/parser/drift-test
+ 	$validation_ref topic/parser/validation
+ 	EOF
+ 	test_cmp expected-bookmarks hg-bookmarks
+ '
+ 
+@@ -148,6 +150,7 @@
+ 	cat >expected-renamed-tree <<-EOF &&
+ 	$(cat root-branch)
+ 	  epic
+ 	    epic/parser
++	      epic/parser/drift-test
+ 	      epic/parser/validation
+ 	EOF

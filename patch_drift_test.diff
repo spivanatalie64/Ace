@@ -1,0 +1,10 @@
+--- t/t7900-ace.sh
++++ t/t7900-ace.sh
+@@ -68,6 +68,7 @@
+ 	git ace checkout drift/test &&
+ 	test_commit drift-base file.txt "base" &&
+ 	drift_ref=$(git ace resolve drift/test) &&
++	git checkout "$(cat root-branch)" &&
+ 	git branch -D "$drift_ref" &&
+ 	git ace status >actual-status &&
+ 	test_grep "drift/test \[DANGLING\]" actual-status &&
