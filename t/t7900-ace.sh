@@ -10,6 +10,10 @@ test_expect_success 'setup repository' '
 	git ace init
 '
 
+test_expect_success 'built git ace binary is wired in' '
+	../git ace status >/dev/null
+'
+
 test_expect_success 'create nested branch metadata' '
 	git ace create topic &&
 	git ace checkout topic &&

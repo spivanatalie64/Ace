@@ -1374,6 +1374,7 @@ LIB_OBJS += xdiff/xprepare.o
 LIB_OBJS += xdiff/xutils.o
 
 BUILTIN_OBJS += builtin/add.o
+BUILTIN_OBJS += builtin/ace.o
 BUILTIN_OBJS += builtin/am.o
 BUILTIN_OBJS += builtin/annotate.o
 BUILTIN_OBJS += builtin/apply.o

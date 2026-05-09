@@ -26,6 +26,7 @@
 #define MAX_ARGS 32
 
 static const char *system_prefix(void);
+static const char *executable_dirname;
 
 #ifdef RUNTIME_PREFIX
 
@@ -281,8 +282,59 @@ static const char *system_prefix(void)
  * This is called during initialization, but No work needs to be done here when
  * runtime prefix is not being used.
  */
-void git_resolve_executable_dir(const char *argv0 UNUSED)
+void git_resolve_executable_dir(const char *argv0)
 {
+	struct strbuf buf = STRBUF_INIT;
+	char *resolved;
+	const char *slash;
+	const char *path_env, *path_entry;
+
+	if (!argv0 || !*argv0)
+		return;
+
+	slash = find_last_dir_sep(argv0);
+	if (slash) {
+		strbuf_add_absolute_path(&buf, argv0);
+		resolved = strbuf_detach(&buf, NULL);
+		slash = find_last_dir_sep(resolved);
+		if (slash)
+			resolved[slash - resolved] = '\0';
+		executable_dirname = resolved;
+		return;
+	}
+
+	path_env = getenv("PATH");
+	if (!path_env)
+		return;
+
+	while (*path_env) {
+		slash = strchr(path_env, PATH_SEP);
+		path_entry = slash ? xstrndup(path_env, slash - path_env) : path_env;
+		if (*path_entry) {
+			strbuf_reset(&buf);
+			strbuf_addf(&buf, "%s/%s", path_entry, argv0);
+			if (is_executable(buf.buf)) {
+				resolved = strbuf_detach(&buf, NULL);
+				slash = find_last_dir_sep(resolved);
+				if (slash)
+					resolved[slash - resolved] = '\0';
+				executable_dirname = resolved;
+				if (path_entry != path_env)
+					free((char *)path_entry);
+				return;
+			}
+		}
+		if (path_entry != path_env)
+			free((char *)path_entry);
+		if (!slash)
+			break;
+		path_env = slash + 1;
+	}
+}
+
+const char *git_executable_dir(void)
+{
+	return executable_dirname;
 }
 
 #endif /* RUNTIME_PREFIX */

@@ -13,11 +13,12 @@
 - `builtin/` contains built-in command entry points.
 - `compat/` and related portability files adapt the codebase across platforms.
 - `git-ace.sh` implements Ace-specific branch-tree workflows on top of normal Git branches.
+- `builtin/ace.c` wires `git ace` into the main `git` binary and launches the Ace workflow wrapper.
 - `git-gui/`, `gitk-git/`, and `gitweb/` provide interface layers beyond the CLI.
 
 ## Ace-Specific Behavior
 
-`git-ace.sh` adds a virtual branch model where human-facing branch names can be nested while backing refs remain safe normal Git branch names. Metadata is stored under `.git/ace/branches/` and powers commands such as `create`, `tree`, `rebase-stack`, `merge-stack`, and `agent run`.
+`git-ace.sh` adds a virtual branch model where human-facing branch names can be nested while backing refs remain safe normal Git branch names. Metadata is stored under `.git/ace/branches/` and powers commands such as `create`, `tree`, `rebase-stack`, `merge-stack`, and `agent run`. The C builtin in `builtin/ace.c` now makes the same command available as `git ace`.
 
 Additional detail:
 
