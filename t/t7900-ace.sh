@@ -220,4 +220,12 @@ test_expect_success 'delete with descendants checks out fallback branch if curre
 	test "$(git branch --show-current)" = "$(cat root-branch)"
 '
 
+test_expect_success 'repair adopts orphaned ace refs into virtual branches' '
+	orphan_oid=$(git rev-parse HEAD) &&
+	git update-ref refs/heads/ace/orphan-branch "$orphan_oid" &&
+	git ace repair --adopt-orphans >repair-orphans &&
+	test_grep "Adopting orphaned ref ace/orphan-branch as recovered/orphan-branch" repair-orphans &&
+	test "$(git rev-parse "$(git ace resolve recovered/orphan-branch)")" = "$orphan_oid"
+'
+
 test_done

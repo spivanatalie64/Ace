@@ -10,7 +10,7 @@ This spec defines the future `git ace status` (or `git ace stack-status`) comman
 
 1. **Topology View**: Display the current branch, its ancestors up to a stable root, and its direct descendants.
 2. **Sync State**: Show whether each branch in the stack is ahead/behind its immediate parent.
-3. **Working Tree Integration**: Overlay the standard working tree status (uncommitted/untracked changes) on the currently checked-out node, and keep the clean-tree case safe.
+3. **Working Tree Integration**: Overlay the standard working tree status (uncommitted/untracked changes) on the currently checked-out node, including the clean-tree case and a visible count for dirty trees.
 4. **Health Diagnostics**: Highlight branches that have drifted, have broken refs, or contain conflicts.
 
 ## Proposed UX
