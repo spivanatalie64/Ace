@@ -569,7 +569,7 @@ print_status_tree () {
 	fi
 	if test "$ace_branch_name" = "$CURRENT_VIRTUAL_BRANCH"
 	then
-		uncommitted=$(git status --porcelain | grep -c "^" || echo 0)
+		uncommitted=$(git status --porcelain | wc -l | tr -d '[:space:]')
 		test "$uncommitted" -gt 0 && printf "%s      ~ %s uncommitted changes
 " "$indent" "$uncommitted"
 	fi
