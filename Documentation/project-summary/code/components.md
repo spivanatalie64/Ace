@@ -21,6 +21,7 @@ Implements the Ace workflow command. Key capabilities include:
 - stack-aware rebase and merge operations
 - Mercurial bookmark and named-branch import/export
 - launching external agents with Ace branch context
+- OpenCode convenience wrapper (`git ace opencode` / `git ace --ai`)
 
 Opinionated take:
 

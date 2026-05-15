@@ -56,6 +56,7 @@
 # command name                          category [category] [category]
 git-add                                 mainporcelain           worktree
 git-ace                                 ancillarymanipulators
+git-ace-opencode                        ancillarymanipulators
 git-am                                  mainporcelain
 git-annotate                            ancillaryinterrogators
 git-apply                               plumbingmanipulators            complete

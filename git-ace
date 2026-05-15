@@ -15,6 +15,8 @@ USAGE="<command> [<args>]
    or: ace hg import-named-branches [<path>]
    or: ace agent list
    or: ace agent run <agent> [<branch>] -- [<arg>...]
+   or: ace opencode [<branch>] -- [<arg>...]
+   or: ace --ai [<branch>] -- [<arg>...]
    or: ace set-parent <branch> <parent>
    or: ace clear-parent <branch>
    or: ace parent [<branch>]
@@ -647,6 +649,24 @@ run_sequencer () {
 
 cmd=${1:-}
 test -n "$cmd" || usage
+
+# --ai flag: shortcut for `git ace opencode`
+if test "$cmd" = "--ai"
+then
+	shift
+	ace_agent_branch=$(current_display_branch)
+	if test $# -ge 1 && test "$1" != "--"
+	then
+		ensure_known_branch "$1"
+		ace_agent_branch=$1
+		shift
+	fi
+	test "$1" = "--" || usage
+	shift
+	run_agent opencode "$ace_agent_branch" "$@" || exit 1
+	exit 0
+fi
+
 shift
 
 case "$cmd" in
@@ -867,6 +887,19 @@ agent)
 		die "unknown Ace agent command: $1"
 		;;
 	esac
+	;;
+opencode)
+	test $# -ge 1 || usage
+	ace_agent_branch=$(current_display_branch)
+	if test "$1" != "--"
+	then
+		ensure_known_branch "$1"
+		ace_agent_branch=$1
+		shift
+	fi
+	test "$1" = "--" || usage
+	shift
+	run_agent opencode "$ace_agent_branch" "$@" || exit 1
 	;;
 set-parent)
 	ensure_store

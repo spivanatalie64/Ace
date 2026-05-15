@@ -61,6 +61,7 @@ From the current `git-ace.sh` implementation, Ace supports these major workflow 
 - print parent, children, chain, and tree views
 - run stack-aware recursive `rebase` and `merge` sequences
 - run arbitrary commands across descendants in depth-first order
+- run the OpenCode agent via `git ace opencode` or `git ace --ai` as a convenience shortcut
 
 ## Agent Integration Model
 

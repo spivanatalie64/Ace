@@ -81,6 +81,14 @@ agent::
 	OpenCode. Configure a launcher with `ace.agent.<name>.command` or let Ace
 	fall back to invoking `<name>` from `PATH`.
 
+opencode::
+	Shortcut for `git ace agent run opencode`. Run the OpenCode agent on the
+	current or specified branch. Usage: `git ace opencode [<branch>] -- <arg>...`
+
+--ai::
+	Top-level flag equivalent to `git ace opencode`. Usage:
+	`git ace --ai [<branch>] -- <arg>...`
+
 hg::
 	Import and export Mercurial-compatible bookmark data. Ace stays Git-native,
 	but can exchange branch pointers with Mercurial workflows through bookmark

@@ -117,6 +117,48 @@ test_expect_success 'agent list includes Claude Code and OpenCode' '
 	test_cmp expected-agents actual-agents
 '
 
+test_expect_success 'opencode subcommand invokes agent with branch context' '
+	parser_ref=$(git ace resolve topic/parser) &&
+	echo "opencode|topic/parser|$parser_ref|topic" >expected-opencode &&
+	git ace opencode topic/parser -- test-arg >actual-opencode &&
+	test_cmp expected-opencode actual-opencode &&
+	echo "test-arg" >expected-opencode-args &&
+	test_cmp expected-opencode-args agent-args
+'
+
+test_expect_success 'opencode subcommand uses current branch when omitted' '
+	git ace checkout topic/parser &&
+	parser_ref=$(git ace resolve topic/parser) &&
+	echo "opencode|topic/parser|$parser_ref|topic" >expected-opencode-cur &&
+	git ace opencode -- test-arg2 >actual-opencode-cur &&
+	test_cmp expected-opencode-cur actual-opencode-cur
+'
+
+test_expect_success 'opencode usage requires at least -- separator' '
+	test_must_fail git ace opencode 2>opencode-err &&
+	test_grep "usage" opencode-err
+'
+
+test_expect_success '--ai flag invokes opencode agent on specified branch' '
+	parser_ref=$(git ace resolve topic/parser) &&
+	echo "opencode|topic/parser|$parser_ref|topic" >expected-ai &&
+	git ace --ai topic/parser -- test-arg3 >actual-ai &&
+	test_cmp expected-ai actual-ai
+'
+
+test_expect_success '--ai flag invokes opencode agent on current branch' '
+	git ace checkout topic/parser &&
+	parser_ref=$(git ace resolve topic/parser) &&
+	echo "opencode|topic/parser|$parser_ref|topic" >expected-ai-cur &&
+	git ace --ai -- test-arg4 >actual-ai-cur &&
+	test_cmp expected-ai-cur actual-ai-cur
+'
+
+test_expect_success '--ai usage requires at least -- separator' '
+	test_must_fail git ace --ai 2>ai-err &&
+	test_grep "usage" ai-err
+'
+
 test_expect_success 'Mercurial bookmark export writes Ace branch pointers' '
 	root_branch=$(cat root-branch) &&
 	root_ref=$(git rev-parse "$root_branch") &&
